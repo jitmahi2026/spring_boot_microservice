@@ -16,4 +16,6 @@ public interface OrderService {
 
 	List<Order> getAllOrders();
 
+	String createOrder(Long productId);
+
 }

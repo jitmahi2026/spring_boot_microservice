@@ -20,7 +20,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
 	
@@ -53,5 +53,11 @@ public class OrderController {
         orderService.deleteOrder(id);
 
         return "Order Deleted Successfully";
+    }
+    
+    @GetMapping(path = "/create/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String createOrder(@PathVariable Long productId) {
+
+        return orderService.createOrder(productId);
     }
 }
