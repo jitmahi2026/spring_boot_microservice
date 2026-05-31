@@ -2,6 +2,7 @@ package com.order.service.orderservice.service;
 
 import org.springframework.stereotype.Service;
 
+import com.order.service.orderservice.Dto.OrderResponse;
 import com.order.service.orderservice.model.Order;
 import java.util.*;
 
@@ -17,5 +18,7 @@ public interface OrderService {
 	List<Order> getAllOrders();
 
 	String createOrder(Long productId);
+
+	OrderResponse createOrder(Long userId, Long productId);
 
 }

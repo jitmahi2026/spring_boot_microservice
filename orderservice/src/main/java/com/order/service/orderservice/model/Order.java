@@ -24,7 +24,8 @@ public class Order {
 	    private List<OrderItem> products;
 
 	    private Double totalAmount;
-
+	    private Integer quantity;
+	    
 	    private String status;
 
 	    private LocalDateTime orderDate;

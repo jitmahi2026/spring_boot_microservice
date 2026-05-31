@@ -19,7 +19,7 @@ import com.user.service.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/user/v1")
+@RequestMapping("/user")
 @Slf4j
 public class UserController {
 
@@ -45,7 +45,7 @@ public class UserController {
 		
 	}
 	
-	@GetMapping(path = "/getuser/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDto> getUserById(@PathVariable Long id)
 	{
 		UserDto response = null;

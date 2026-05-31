@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.order.service.orderservice.Dto.OrderResponse;
 import com.order.service.orderservice.model.Order;
 import com.order.service.orderservice.service.OrderService;
 
@@ -59,5 +61,12 @@ public class OrderController {
     public String createOrder(@PathVariable Long productId) {
 
         return orderService.createOrder(productId);
+    }
+    
+    @GetMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public OrderResponse createOrder(@RequestParam Long userId, @RequestParam Long productId)
+    {
+		return orderService.createOrder(userId, productId);
+    	
     }
 }

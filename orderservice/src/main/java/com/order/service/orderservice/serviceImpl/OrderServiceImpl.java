@@ -6,8 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.order.service.orderservice.Dto.OrderResponse;
 import com.order.service.orderservice.Dto.ProductDto;
+import com.order.service.orderservice.Dto.UserDto;
 import com.order.service.orderservice.feign.ProductFeignClient;
+import com.order.service.orderservice.feign.UserFeignClient;
 import com.order.service.orderservice.model.Order;
 import com.order.service.orderservice.repository.OrderRepository;
 import com.order.service.orderservice.service.OrderService;
@@ -17,6 +20,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+    private UserFeignClient userFeignClient;
 	
 	@Autowired
 	private ProductFeignClient productFeignClient;
@@ -56,7 +62,7 @@ public class OrderServiceImpl implements OrderService{
 
         return "Order created for product: "
         		+ " product_Id: "
-                + product.getProduct_Id()
+                + product.getId()
         		+ " Name: "
                 + product.getName()
                 + " Price: "
@@ -66,5 +72,25 @@ public class OrderServiceImpl implements OrderService{
                 + " Description: "
                 + product.getDescription();
     }
+
+	@Override
+	public OrderResponse createOrder(Long userId, Long productId) {
+		// TODO Auto-generated method stub
+		Order order = orderRepository.getOrderbyUserIdAndProductId(userId,productId).orElse(null);
+		 UserDto user =
+	                userFeignClient.getUserById(userId);
+
+	        ProductDto product =
+	                productFeignClient.getProductById(productId);
+	        
+	        OrderResponse response = new OrderResponse();
+	        response.setQuantity(order.getQuantity());
+	        response.setStatus(order.getStatus());
+	        response.setOrderDate(order.getOrderDate());
+	        response.setUser(user);
+	        response.setProduct(product);
+	        
+		return response;
+	}
 
 }
