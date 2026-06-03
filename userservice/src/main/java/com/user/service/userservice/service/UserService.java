@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.user.service.userservice.domain.LoginResponseDto;
 import com.user.service.userservice.domain.UserDto;
 
 @Service
@@ -14,5 +15,7 @@ public interface UserService {
 	UserDto saveUser(UserDto userDto);
 
 	UserDto getUserById(Long id);
+
+	String login(UserDto request);
 
 }

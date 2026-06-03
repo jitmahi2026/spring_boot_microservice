@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.user.service.userservice.domain.LoginResponseDto;
 import com.user.service.userservice.domain.UserDto;
 import com.user.service.userservice.service.UserService;
 
@@ -80,6 +81,15 @@ public class UserController {
 			    ex.printStackTrace();
 		}
 		return ResponseEntity.ok().body(response);
+		
+	}
+	
+	@PostMapping(path = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE)
+	public LoginResponseDto login(@RequestBody UserDto request) {
+		
+		String token = userService.login(request);
+		log.info("Token ======= " +token);
+		return new LoginResponseDto(token);
 		
 	}
 }

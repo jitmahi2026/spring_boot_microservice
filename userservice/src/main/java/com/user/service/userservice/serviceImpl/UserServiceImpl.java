@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.user.service.userservice.authService.JwtService;
 import com.user.service.userservice.domain.UserDto;
 import com.user.service.userservice.model.User;
 import com.user.service.userservice.repository.UserRepository;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+    private JwtService jwtService;
 	
 	@Override
 	public List<UserDto> getAllUsers() {
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService{
 		User user = new User();
 		user.setEmail(userDto.getEmail());
 		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
 		user.setRole(userDto.getRole());
 		
 		userRepository.save(user);
@@ -68,6 +73,20 @@ public class UserServiceImpl implements UserService{
 		useDto.setName(user.getName());
 		useDto.setRole(user.getRole());
 		return useDto;
+	}
+
+	@Override
+	public String login(UserDto request) {
+		// TODO Auto-generated method stub
+		User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+		
+		if(!user.getPassword().equals(request.getPassword())) {
+			
+			throw new RuntimeException("Invalid Credentials");
+		}
+		
+		return jwtService.generateToken(
+                user.getName());
 	}
 
 }
