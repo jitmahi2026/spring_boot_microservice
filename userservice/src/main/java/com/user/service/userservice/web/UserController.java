@@ -88,7 +88,7 @@ public class UserController {
 	public LoginResponseDto login(@RequestBody UserDto request) {
 		
 		String token = userService.login(request);
-		log.info("Token ======= " +token);
+		
 		return new LoginResponseDto(token);
 		
 	}
