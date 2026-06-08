@@ -12,6 +12,7 @@ import com.order.service.orderservice.Dto.ProductDto;
 import com.order.service.orderservice.Dto.UserDto;
 import com.order.service.orderservice.feign.ProductFeignClient;
 import com.order.service.orderservice.feign.UserFeignClient;
+import com.order.service.orderservice.kafkaProducer.KafkaProducerService;
 import com.order.service.orderservice.model.Order;
 import com.order.service.orderservice.repository.OrderRepository;
 import com.order.service.orderservice.service.OrderService;
@@ -32,6 +33,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private ProductFeignClient productFeignClient;
+	
+	@Autowired
+	private KafkaProducerService kafkaProduceService;
 
 	@Override
 	public Order placeOrder(Order order) {
@@ -39,7 +43,13 @@ public class OrderServiceImpl implements OrderService {
 		order.setOrderDate(LocalDateTime.now());
 		order.setStatus("PLACED");
 
-		return orderRepository.save(order);
+		Order saveOrder =  orderRepository.save(order);
+		
+		// Publish Kafka Event
+		kafkaProduceService.sendMessage("Order Created : OrderId = "
+	            + saveOrder.getProducts().get(0));
+		
+		return saveOrder;
 
 	}
 
@@ -74,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	@Bulkhead(name = "productService", fallbackMethod = "bulkheadFallback", type = Bulkhead.Type.SEMAPHORE) //allow only 10 concurnt call becoze All threads occupied Whole service becomes slow
+	//@Bulkhead(name = "productService", fallbackMethod = "bulkheadFallback", type = Bulkhead.Type.SEMAPHORE) //allow only 10 concurnt call becoze All threads occupied Whole service becomes slow
 	@RateLimiter(name = "productService", fallbackMethod = "rateLimiterFallback") //allow some request per second after give limite antimation then try some second
 	// @Retry(name = "productService", fallbackMethod = "createOrderFallback") // suppose calling service is slow after some time automatically retry service 1call, 2call fail then 3call run
 	// @CircuitBreaker(name = "productService", fallbackMethod =

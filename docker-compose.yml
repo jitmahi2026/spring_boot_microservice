@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+
+  eureka-server:
+    image: serviceregistry
+    container_name: service-container
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    image: api-gateway
+    container_name: gateway-container
+    ports:
+      - "8081:8081"
+
+  user-service:
+    image: user-service
+    container_name: user-container
+    ports:
+      - "8084:8084"
+
+  product-service:
+    image: product-service
+    container_name: product-container
+    ports:
+      - "8089:8089"
+
+  order-service:
+    image: order-service
+    container_name: order-container
+    ports:
+      - "8092:8092"
+
+  notification-service:
+    image: notification-service
+    container_name: notification-container
+    ports:
+      - "8095:8095"
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+networks:
+  microservices-network:
+    driver: bridge
